@@ -2,7 +2,8 @@
 title: "GetEmpiricalXML"
 author: "James Baxter"
 date: "2024-01-27"
-output: html_document
+output:
+  pdf_document: default
 ---
 
 ## R Markdown
