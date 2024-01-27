@@ -72,6 +72,8 @@ def add_empiricaltree(root, tree_path):
     new_sub1.set("fileName", tree_path)
     new_sub1a = ET.SubElement(new_sub1, 'taxa')
     new_sub1a.set("idref", "taxa")
+    
+    # after taxa but before 'strictClockBranchRates' = additional flexibility required
     position = root.find('taxa')
     root.insert(root.getchildren().index(position) + 1, new_sub1)
 
