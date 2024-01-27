@@ -1,0 +1,20 @@
+---
+title: "GetEmpiricalXML"
+author: "James Baxter"
+date: "2024-01-27"
+output: html_document
+---
+
+## R Markdown
+
+GetEmpiricalXML allows the user to remove substitution, clock and tree parameters from a beauti XML
+and instead run a trait analysis using a previously inferred posterior sample of phylogenetic trees.
+
+The benefit of this approach is to reduce run-time, allowing proper inference of the phylogenetic
+tree before starting a trait analysis.
+
+The script runs a command line application as follows:
+```{bash, eval=FALSE, engine="sh"}
+python3 GetEmpiricalXML.py path/to/originalfile.xml path/to/empiricaltrees.tree
+```
+
