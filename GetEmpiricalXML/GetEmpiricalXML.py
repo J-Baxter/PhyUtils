@@ -67,18 +67,21 @@ def remove_element(root, query):
 
 
 def add_empiricaltree(root, tree_path):
-    # Need to set order
-    new_sub1 = ET.SubElement(root, 'empiricalTreeDistributionModel')
+    new_sub1 = ET.Element('empiricalTreeDistributionModel')
     new_sub1.set("id", "treeModel")
     new_sub1.set("fileName", tree_path)
     new_sub1a = ET.SubElement(new_sub1, 'taxa')
     new_sub1a.set("idref", "taxa")
+    position = root.find('taxa')
+    root.insert(root.getchildren().index(position) + 1, new_sub1)
 
-    new_sub2 = ET.SubElement(root, 'statistic')
+    new_sub2 = ET.Element('statistic')
     new_sub2.set("id", "treeModel.currentTree")
     new_sub2.set("name", 'Current Tree')
     new_sub2a = ET.SubElement(new_sub2, 'empiricalTreeDistributionModel')
     new_sub2a.set("idref", "treeModel")
+    position = root.find('taxa')
+    root.insert(root.getchildren().index(position) + 2, new_sub2)
 
     target_element = root.find(".//operators")
     new_sub3 = ET.SubElement(target_element, 'empiricalTreeDistributionOperator')
