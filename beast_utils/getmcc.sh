@@ -9,14 +9,14 @@ fi
 directory=$1
 
 # Get arguments for burnin/ resample parameters
-while getopts "burnin:resample:" var
+while getopts "burnin:" var
 do
    case "$var" in
-       i) burnin=${OPTARG};;
-       r) resample=${OPTARG};;
+       burnin) burnin=${OPTARG};;
    esac
 done
 
 for combinedfile in *combined.trees; do 
-  /Applications/BEAST\ v1.10.4/bin/treeannotator -burnin "$burnin" -heights mean $combinedfile "$(echo "$combinedfile" | awk '{sub(/combined.log$/, "mcc.tree")}1')";
+  FILENAME="$(echo "$combinedfile" | awk '{sub(/combined.log$/, "mcc.tree")}1')"
+  /Applications/BEAST\ v1.10.4/bin/treeannotator -burnin "$burnin" -heights median "$combinedfile" "$FILENAME";
 done
