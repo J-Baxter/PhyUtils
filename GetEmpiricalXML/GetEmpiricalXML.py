@@ -15,13 +15,77 @@
 import xml.etree.ElementTree as ET
 import argparse
 import re
-import keys
+#import keys
+
+keys = [['', 'id', 'alignment'],
+        ['', 'id', 'treeModel'],
+        ['', 'id', 'treeLength'],
+        ['', 'id', 'CP1+2.patterns'],
+        ['', 'id', 'CP3.patterns'],
+        ['', 'id', 'initialDemo'],
+        ['', 'id', 'age(root)'],
+        ['', 'id', 'skygrid'],
+        ['', 'id', 'branchRates'],
+        ['', 'id', 'meanRate'],
+        ['', 'id', 'coefficientOfVariation'],
+        ['', 'id', 'covariance'],
+        ['', 'id', 'CP1+2.hky'],
+        ['', 'id', 'CP3.hky'],
+        ['', 'id', 'CP1+2.siteModel'],
+        ['', 'id', 'CP3.siteModel'],
+        ['', 'id', 'allMus'],
+        ['', 'id', 'treeLikelihood'],
+        ['', 'id', "startingTree"],
+        ['', 'id', "allNus"],
+        ['parameter', 'idref', 'CP1+2.kappa'],
+        ['parameter', 'idref', 'CP3.kappa'],
+        ['parameter', 'idref', 'frequencies'],
+        ['parameter', 'idref', 'CP1+2.alpha'],
+        ['parameter', 'idref', 'CP3.alpha'],
+        ['parameter', 'idref', 'ucld.mean'],
+        ['parameter', 'idref', 'ucld.stdev'],
+        ['parameter', 'idref', 'treeModel.allInternalNodeHeights'],
+        ['parameter', 'idref', 'ucld.mean'],
+        ['parameter', 'idref', 'branchRates.categories'],
+        ['parameter', 'idref', 'allMus'],
+        ['parameter', 'idref', 'treeModel.rootHeight'],
+        ['parameter', 'idref', 'treeModel.internalNodeHeights'],
+        ['parameter', 'idref', 'skygrid.precision'],
+        ['parameter', 'idref', 'ucld.mean'],
+        ['parameter', 'idref', 'ucld.stdev'],
+        ['parameter', 'idref', 'skygrid.logPopSize'],
+        ['parameter', 'idref', 'skygrid.cutOff'],
+        ['parameter', 'idref', 'skygrid'],
+        ['parameter', 'idref', "age(root)"],
+        ['parameter', 'idref', "allNus"],
+        ['parameter', 'idref', "constant.popSize"],
+        ['tmrcaStatistic', 'idref', "age(root)"],
+        ['discretizedBranchRates', 'idref', "branchRates"],
+        ['treeModel', 'idref', 'treeModel'],
+        ['siteModel', 'idref', "CP1+2.siteModel"],
+        ['siteModel', 'idref', "CP3.siteModel"],
+        ['joint', 'idref', 'joint'],
+        ['upDownOperator', '', ''],
+        ['subtreeSlide', '', ''],
+        ['narrowExchange', '', ''],
+        ['wideExchange', '', ''],
+        ['wilsonBalding', '', ''],
+        ['gmrfGridBlockUpdateOperator', '', ''],
+        ['trancated', '', ''],
+        ['gmrfSkyGridLikelihood', '', ''],
+        ['treeDataLikelihood', '', ''],
+        ['discretizedBranchRates', '', ''],
+        ['constantSize', '', ''],
+        ['coalescentLikelihood', '', ''],
+        ['compoundParameter', '', ''],
+
+        ]
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="a script to do stuff")
     parser.add_argument("xml_path")
-    parser.add_argument("empiricaltree_path")
+    parser.add_argument("tree_path")
     args = parser.parse_args()
     return args
 
@@ -72,10 +136,10 @@ def add_empiricaltree(root, tree_path):
     new_sub1.set("fileName", tree_path)
     new_sub1a = ET.SubElement(new_sub1, 'taxa')
     new_sub1a.set("idref", "taxa")
-    
+
     # after taxa but before 'strictClockBranchRates' = additional flexibility required
     position = root.find('taxa')
-    root.insert(root.getchildren().index(position) + 1, new_sub1)
+    root.insert(list(root).index(position) + 1, new_sub1)
 
     new_sub2 = ET.Element('statistic')
     new_sub2.set("id", "treeModel.currentTree")
@@ -83,7 +147,7 @@ def add_empiricaltree(root, tree_path):
     new_sub2a = ET.SubElement(new_sub2, 'empiricalTreeDistributionModel')
     new_sub2a.set("idref", "treeModel")
     position = root.find('taxa')
-    root.insert(root.getchildren().index(position) + 2, new_sub2)
+    root.insert(list(root).index(position) + 2, new_sub2)
 
     target_element = root.find(".//operators")
     new_sub3 = ET.SubElement(target_element, 'empiricalTreeDistributionOperator')
@@ -106,7 +170,7 @@ def main():
 
     root = add_empiricaltree(root, inputs.tree_path)
 
-    root.write(file_path)
+    xml.write(file_path)
 
 
 
