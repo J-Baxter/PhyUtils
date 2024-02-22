@@ -59,11 +59,14 @@ keys = [['', 'id', 'alignment'],
         ['parameter', 'idref', "age(root)"],
         ['parameter', 'idref', "allNus"],
         ['parameter', 'idref', "constant.popSize"],
+        ['parameter', 'idref', "default.allNus"],
+        ['parameter', 'idref', "default.clock.rate"],
         ['tmrcaStatistic', 'idref', "age(root)"],
         ['discretizedBranchRates', 'idref', "branchRates"],
         ['treeModel', 'idref', 'treeModel'],
         ['siteModel', 'idref', "CP1+2.siteModel"],
         ['siteModel', 'idref', "CP3.siteModel"],
+        ['strictClockBranchRates', 'idref', 'default.branchRates'],
         ['joint', 'idref', 'joint'],
         ['upDownOperator', '', ''],
         ['subtreeSlide', '', ''],
@@ -77,9 +80,7 @@ keys = [['', 'id', 'alignment'],
         ['discretizedBranchRates', '', ''],
         ['constantSize', '', ''],
         ['coalescentLikelihood', '', ''],
-        ['compoundParameter', '', ''],
-
-        ]
+        ['compoundParameter', '', '']]
 
 
 def parse_args():
