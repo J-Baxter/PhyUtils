@@ -1,12 +1,25 @@
+# Writes a batch submission shell script to run BEAST (Rambaut et al. 2004) on a
+# linux server running Oracle Grid Engine/Sun Grid Engine.
+#
+# Arguments: 1) path to beauti XML that you wish to use to run the BEAST analysis
+#
+# NB: Either run this script on an interactive node on the server, or make sure
+#     you run in the same working directory as your beauti.xml. The path submitted 
+#     to BEAST will be the path submitted in the first argument.
+#
+# Copyright (c) 2024 James Baxter
+
 # import modules
 import argparse
 import re
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(description="a script to write sun grid batch drop submission for BEAST 1 analysis")
+    parser = argparse.ArgumentParser(description="a script to write sun grid batch job submission for BEAST1")
     parser.add_argument("xml_path")
     args = parser.parse_args()
     return args
+
 
 def get_filename(input_string):
     match = re.search(r'[^/]+$', input_string)
@@ -14,12 +27,14 @@ def get_filename(input_string):
         return match.group(0)
     else:
         return input_string
-    
+
+
 def main():
     inputs = parse_args()
     relative_path = inputs.xml_path
     shell_filename = re.sub('.xml$', '.sh', relative_path)
     xml_filename = get_filename(relative_path)
+
     
     with open(shell_filename, "w") as file:
         file.write('#!/bin/sh \n')
