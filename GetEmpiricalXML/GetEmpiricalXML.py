@@ -16,72 +16,38 @@ import xml.etree.ElementTree as ET
 import argparse
 import re
 
-
-keys = [['', 'id', 'alignment'],
-        ['', 'id', 'treeModel'],
-        ['', 'id', 'treeLength'],
-        ['', 'id', 'CP1+2.patterns'],
-        ['', 'id', 'CP3.patterns'],
-        ['', 'id', 'initialDemo'],
-        ['', 'id', 'age(root)'],
-        ['', 'id', 'skygrid'],
-        ['', 'id', 'branchRates'],
-        ['', 'id', 'meanRate'],
-        ['', 'id', 'coefficientOfVariation'],
-        ['', 'id', 'covariance'],
-        ['', 'id', 'CP1+2.hky'],
-        ['', 'id', 'CP3.hky'],
-        ['', 'id', 'CP1+2.siteModel'],
-        ['', 'id', 'CP3.siteModel'],
-        ['', 'id', 'allMus'],
-        ['', 'id', 'treeLikelihood'],
-        ['', 'id', "startingTree"],
-        ['', 'id', "allNus"],
-        ['parameter', 'idref', 'CP1+2.kappa'],
-        ['parameter', 'idref', 'CP3.kappa'],
-        ['parameter', 'idref', 'frequencies'],
-        ['parameter', 'idref', 'CP1+2.alpha'],
-        ['parameter', 'idref', 'CP3.alpha'],
-        ['parameter', 'idref', 'ucld.mean'],
-        ['parameter', 'idref', 'ucld.stdev'],
-        ['parameter', 'idref', 'treeModel.allInternalNodeHeights'],
-        ['parameter', 'idref', 'ucld.mean'],
-        ['parameter', 'idref', 'branchRates.categories'],
-        ['parameter', 'idref', 'allMus'],
-        ['parameter', 'idref', 'treeModel.rootHeight'],
-        ['parameter', 'idref', 'treeModel.internalNodeHeights'],
-        ['parameter', 'idref', 'skygrid.precision'],
-        ['parameter', 'idref', 'ucld.mean'],
-        ['parameter', 'idref', 'ucld.stdev'],
-        ['parameter', 'idref', 'skygrid.logPopSize'],
-        ['parameter', 'idref', 'skygrid.cutOff'],
-        ['parameter', 'idref', 'skygrid'],
-        ['parameter', 'idref', "age(root)"],
-        ['parameter', 'idref', "allNus"],
-        ['parameter', 'idref', "constant.popSize"],
-        ['parameter', 'idref', "default.allNus"],
-        ['parameter', 'idref', "default.clock.rate"],
-        ['tmrcaStatistic', 'idref', "age(root)"],
-        ['discretizedBranchRates', 'idref', "branchRates"],
-        ['treeModel', 'idref', 'treeModel'],
-        ['siteModel', 'idref', "CP1+2.siteModel"],
-        ['siteModel', 'idref', "CP3.siteModel"],
-        ['strictClockBranchRates', 'idref', 'default.branchRates'],
-        ['joint', 'idref', 'joint'],
+keys = [['alignment', '', ''],
+        ['patterns', '', ''],
+        ['constantSize', '', ''],
+        ['coalescentSimulator', '', ''],
+        ['treeModel', '', ''],
+        ['treeLengthStatistic', '', ''],
+        ['tmrcaStatistic', '', ''],
+        ['coalescentLikelihood', '', ''],
+        ['HKYModel', '', ''],
+        ['statistic', '', ''],
+        ['multivariateDiffusionModel', '', ''],
+        ['treeDataLikelihood', '', ''],
         ['upDownOperator', '', ''],
         ['subtreeSlide', '', ''],
         ['narrowExchange', '', ''],
         ['wideExchange', '', ''],
         ['wilsonBalding', '', ''],
-        ['gmrfGridBlockUpdateOperator', '', ''],
-        ['trancated', '', ''],
-        ['gmrfSkyGridLikelihood', '', ''],
-        ['treeDataLikelihood', '', ''],
-        ['discretizedBranchRates', '', ''],
-        ['constantSize', '', ''],
-        ['coalescentLikelihood', '', ''],
-        ['compoundParameter', '', '']]
-
+        ['uniformOperator', '', ''],
+        ['', 'id', 'default.branchRates'],
+        ['', 'id', 'default.meanRate'],
+        ['', 'id', 'mu'],
+        ['', 'id', 'siteModel'],
+        ['parameter', 'idref', 'kappa'],
+        ['parameter', 'idref', 'frequencies'],
+        ['parameter', 'idref', 'default.clock.rate'],
+        ['treeModel', 'idref', 'treeModel'],
+        ['parameter', 'idref', 'treeModel.allInternalNodeHeights'],
+        ['parameter', 'idref', 'treeModel.rootHeight'],
+        ['parameter', 'idref', 'constant.popSize'],
+        ['strictClockBranchRates', 'idref', 'default.branchRates'],
+        ['', 'label', 'age(root)'],
+        ['', 'tag', 'default.rate']]
 
 def parse_args():
     parser = argparse.ArgumentParser(description="a script to do stuff")
@@ -156,6 +122,11 @@ def add_empiricaltree(root, tree_path):
     new_sub3a = ET.SubElement(new_sub3, 'empiricalTreeDistributionModel')
     new_sub3a.set("idref", "treeModel")
 
+    target_element = root.find(".//logTree")
+    new_sub4 = ET.Element('treeModel')
+    new_sub4.set("idref", "treeModel")
+    target_element.insert(0, new_sub4)
+
     return root
 
 
@@ -171,7 +142,9 @@ def main():
 
     root = add_empiricaltree(root, inputs.tree_path)
 
-    xml.write(file_path)
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="\t", level=0)
+    tree.write(file_path, encoding="utf-8")
 
 
 
