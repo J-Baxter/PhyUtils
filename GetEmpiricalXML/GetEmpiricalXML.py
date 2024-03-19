@@ -5,11 +5,12 @@
 #            2) file path to posterior distribution of phylogenetic trees
 #            (as obtained from BEAST)
 #
-# This script works reasonably well on typical BEAST parameterisations and model
-# selection. If you have included advanced models in your Beauti XML, you may
-# need to supplement 'elements.py'
+# This script works reasonably well using default BEAST parameterisations for clock and tree model.
+# If you have included advanced models in your Beauti XML, you may need to supplement the keys list.
 
-# Copyright (c) 2024 James Baxter
+# NB: requires python 3.9 or later
+
+# Copyright (c) 2024 James Baxter under GNU GENERAL PUBLIC LICENSE Version 3
 
 # import modules
 import xml.etree.ElementTree as ET
