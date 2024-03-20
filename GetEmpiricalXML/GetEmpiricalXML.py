@@ -27,7 +27,6 @@ keys = [['alignment', '', ''],
         ['coalescentLikelihood', '', ''],
         ['HKYModel', '', ''],
         ['statistic', '', ''],
-        ['multivariateDiffusionModel', '', ''],
         ['treeDataLikelihood', '', ''],
         ['upDownOperator', '', ''],
         ['subtreeSlide', '', ''],
@@ -35,20 +34,24 @@ keys = [['alignment', '', ''],
         ['wideExchange', '', ''],
         ['wilsonBalding', '', ''],
         ['uniformOperator', '', ''],
+        ['logNormalPrior', '', ''],
+        ['dirichletPrior', '', ''],
         ['', 'id', 'default.branchRates'],
         ['', 'id', 'default.meanRate'],
         ['', 'id', 'mu'],
         ['', 'id', 'siteModel'],
-        ['parameter', 'idref', 'kappa'],
-        ['parameter', 'idref', 'frequencies'],
-        ['parameter', 'idref', 'default.clock.rate'],
-        ['treeModel', 'idref', 'treeModel'],
-        ['parameter', 'idref', 'treeModel.allInternalNodeHeights'],
-        ['parameter', 'idref', 'treeModel.rootHeight'],
-        ['parameter', 'idref', 'constant.popSize'],
-        ['strictClockBranchRates', 'idref', 'default.branchRates'],
+        ['', 'idref', 'kappa'],
+        ['', 'idref', 'frequencies'],
+        ['', 'idref', 'default.clock.rate'],
+        ['', 'idref', 'default.meanRate'],
+        ['', 'idref', 'treeModel.allInternalNodeHeights'],
+        ['', 'idref', 'treeModel.rootHeight'],
+        ['', 'idref', 'constant.popSize'],
+        ['', 'idref', 'default.branchRates'],
+        ['', 'label', 'default.clock.rate'],
         ['', 'label', 'age(root)'],
-        ['', 'tag', 'default.rate']]
+        ['', 'tag', 'default.rate'],
+        ['oneOnXPrior', '', '']]
 
 def parse_args():
     parser = argparse.ArgumentParser(description="a script to do stuff")
@@ -83,6 +86,7 @@ def parse_query(key):
 
 def remove_element(root, query):
     element_ids = root.findall(query)
+
 
     if isinstance(element_ids, list):
         for element in element_ids:
@@ -128,6 +132,25 @@ def add_empiricaltree(root, tree_path):
     new_sub4.set("idref", "treeModel")
     target_element.insert(0, new_sub4)
 
+    target_element = root.findall(".//ctmcScalePrior")
+    if target_element:
+        for target in target_element:
+            target.insert(1, new_sub4)
+
+    target_element = root.find(".//multivariateTraitLikelihood[multivariateDiffusionModel]")
+    # Check if the element is found
+    if target_element is not None:
+        target_element.insert(1, new_sub4)
+
+    target_element = root.findall(".//ancestralTreeLikelihood[attributePatterns]")
+    # Check if the element is found
+    if target_element:
+        for target in target_element:
+            target.insert(1, new_sub4)
+
+    for rate_statistic in root.findall(".//rateStatistic[@mode='mean']"):
+        rate_statistic.insert(0, new_sub4)
+
     return root
 
 
@@ -140,6 +163,53 @@ def main():
     for key in keys:
         query = parse_query(key)
         root = remove_element(root, query)
+
+    operators_element = root.find(".//operators")
+
+    # If <operators> element exists
+    if operators_element:
+        # Find all <scaleOperator> elements under <operators>
+        scale_operators = operators_element.findall("./scaleOperator")
+
+        # Iterate over each <scaleOperator> element
+        for scale_operator in scale_operators:
+            # Check if the <scaleOperator> element is empty (has no subelements)
+            if len(scale_operator) == 0:
+                # Remove the empty <scaleOperator> element from <operators>
+                operators_element.remove(scale_operator)
+
+        scale_operators = operators_element.findall("./deltaExchange")
+        # Iterate over each <scaleOperator> element
+        for scale_operator in scale_operators:
+            # Check if the <scaleOperator> element is empty (has no subelements)
+            if len(scale_operator) == 0:
+                # Remove the empty <scaleOperator> element from <operators>
+                operators_element.remove(scale_operator)
+
+    mcmc_element = root.find(".//mcmc")
+
+    if mcmc_element:
+        joint_element = mcmc_element.find("./joint")
+        if joint_element:
+            # Find the <prior> element under <joint>
+            prior_element = joint_element.find("./prior")
+            # If <prior> element exists
+            if prior_element:
+                # Find the <ctmcScalePrior> element under <prior>
+                ctmc_scale_prior_element = prior_element.find("./ctmcScalePrior")
+                # If <ctmcScalePrior> element exists
+                if ctmc_scale_prior_element:
+                    # Find the <ctmcScale> element under <ctmcScalePrior>
+                    ctmc_scale_element = ctmc_scale_prior_element.find("./ctmcScale")
+                    # If <ctmcScale> element exists
+                    if len(ctmc_scale_element) == 0:
+                        # Remove <ctmcScale> from its parent <ctmcScalePrior>
+                        ctmc_scale_prior_element.remove(ctmc_scale_element)
+
+                if len(ctmc_scale_prior_element) == 0:
+                # Remove <ctmcScale> from its parent <ctmcScalePrior>
+                    prior_element.remove(ctmc_scale_prior_element)
+
 
     root = add_empiricaltree(root, inputs.tree_path)
 
