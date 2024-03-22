@@ -1,3 +1,13 @@
+# Divides a fasta alignment into two sub alignments, based on the root of the phylogenetic tree
+# NB this is relative, so 'allele A' from one alignment might not necessarily match 'allele A'
+# from another.
+#
+# Arguments: 1) NS alignment
+#
+# NB: requires Biopython, re & string
+#
+# Copyright (c) 2024 James Baxter under GNU GENERAL PUBLIC LICENSE Version 3˚=
+
 from Bio import AlignIO
 from re import sub
 from string import ascii_uppercase
