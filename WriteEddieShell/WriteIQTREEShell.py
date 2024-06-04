@@ -15,8 +15,8 @@ import re
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="a script to write sun grid batch job submission for BEAST1")
-    parser.add_argument("xml_path")
+    parser = argparse.ArgumentParser(description="a script to write sun grid batch job submission for IQTREE")
+    parser.add_argument("file_path")
     args = parser.parse_args()
     return args
 
@@ -31,43 +31,43 @@ def get_filename(input_string):
 
 def main():
     inputs = parse_args()
-    relative_path = inputs.xml_path
-    shell_filename = re.sub('.xml$', '.sh', relative_path)
-    xml_filename = get_filename(relative_path)
+    relative_path = inputs.file_path
+    shell_filename = re.sub('.fasta$', '.sh', relative_path)
+    fasta_filename = get_filename(relative_path)
+
 
 
     with open(shell_filename, "w") as file:
         file.write('#!/bin/sh \n')
         file.write('################################################################################\n')
         file.write('################################################################################\n')
-        file.write('# This script runs a simple BEAST run on EDDIE \n')
+        file.write('# This script runs a simple IQTREE run on EDDIE \n')
         file.write('# \n')
-        file.write('# It requires the beauti XMLs to be present in the current working directory and \n')
-        file.write('# for all beast runs to require the same command line options.\n')
+        file.write('# It requires the .fasta to be present in the current working directory and \n')
+        file.write('# for all trees to require the same command line options.\n')
         file.write('#\n')
         file.write('# Works alongside arrayjobsubmit.sh as part of array job submission, but can\n')
-        file.write('# easily be appropriated for submission of a single BEAST run\n')
+        file.write('# easily be appropriated for submission of a single IQTREE run\n')
         file.write('################################################################################\n')
         file.write('# Grid Engine options\n')
-        file.write('#$ -N ' + xml_filename + '\n')
+        file.write('#$ -N ' + fasta_filename + '\n')
         file.write('#$ -cwd\n')
-        file.write('#$ -pe sharedmem 2\n')
-        file.write('#$ -l h_vmem=8G\n')
-        file.write('#$ -l h_rt=200:00:00\n')
+        file.write('#$ -pe sharedmem 4\n')
+        file.write('#$ -l h_vmem=16G\n')
+        file.write('#$ -l h_rt=72:00:00\n')
         file.write('#$ -M james.baxter@ed.ac.uk\n')
         file.write('#$ -P roslin_eeid_aiv\n')
         file.write('#$ -m baes\n')
         file.write('. /etc/profile.d/modules.sh\n')
         file.write('################################################################################\n')
-        file.write('# load BEAGLE and BEAST\n')
-        file.write('module load roslin/beast/1.10.4-beagle2\n')
+        file.write('module load roslin/iqtree/2.0.5\n')
         file.write('################################################################################\n')
         file.write('# Run the program\n')
         file.write("echo '=============================================='\n")
         file.write("echo '** Hello BEAST user !**'\n")
         file.write('echo "This job is running on $HOSTNAME"\n')
-        file.write("echo 'Start BEAST with AIV data this is a 200 hour run'\n")
-        file.write('beast '+ xml_filename + ' \n')
+        file.write("echo 'Start IQTREE with AIV data'\n")
+        file.write('iqtree2 -s ' + fasta_filename + ' -m TN93+G4+I -bb 1000 -nt AUTO \n')
         file.write("echo '** Done **'\n")
         file.write('echo "============================================="\n')
         file.write('################################################################################\n')
