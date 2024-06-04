@@ -1,11 +1,7 @@
-# Writes a batch submission shell script to run BEAST (Rambaut et al. 2004) on a
+# Writes a batch submission shell script to run IQTREE (Nguyen et al. 2014) on a
 # linux server running Oracle Grid Engine/Sun Grid Engine.
 #
-# Arguments: 1) path to beauti XML that you wish to use to run the BEAST analysis
-#
-# NB: Either run this script on an interactive node on the server, or make sure
-#     you run in the same working directory as your beauti.xml. The path submitted
-#     to BEAST will be the path submitted in the first argument.
+# Arguments: 1) path to .fasta alignment for which you wish to use to run the analysis
 #
 # Copyright (c) 2024 James Baxter
 
